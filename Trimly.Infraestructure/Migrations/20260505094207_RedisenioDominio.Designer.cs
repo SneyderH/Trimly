@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Trimly.Infrastructure.Data;
@@ -11,9 +12,11 @@ using Trimly.Infrastructure.Data;
 namespace Trimly.Infrastructure.Migrations
 {
     [DbContext(typeof(TrimlyDbContext))]
-    partial class TrimlyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260505094207_RedisenioDominio")]
+    partial class RedisenioDominio
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

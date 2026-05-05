@@ -18,23 +18,116 @@ namespace Trimly.Infrastructure.Data
             // 1. Usuarios
             var usuarios = new List<Usuario>
             {
-                new Usuario { Name = "Sneyder Hoyos", Email = "sneyderhl2002@gmail.com", PhoneNumber = "3005715292"},
-                new Usuario { Name = "Hermes Garcia", Email = "hermestino29@gmail.com", PhoneNumber = "3014589865"},
-                new Usuario { Name = "Davidson Arias", Email = "dat2002@gmail.com", PhoneNumber = "3025478956"}
+                new Usuario
+                {
+                    Name = "Sneyder Hoyos",
+                    Email = "superadmin@trimly.com",
+                    PhoneNumber = "3005715292",
+                    Rol = RolUsuario.SuperAdmin
+                },
+                new Usuario
+                {
+                    Name = "Harold Bedoya",
+                    Email = "haroldb@trimly.com",
+                    PhoneNumber = "3001234567",
+                    Rol = RolUsuario.AdminBarberia
+                },
+                new Usuario
+                {
+                    Name = "Yuri Vilela",
+                    Email = "yuriv@trimly.com",
+                    PhoneNumber = "3002569878",
+                    Rol = RolUsuario.Barbero
+                },
+                new Usuario
+                {
+                    Name = "Hermes Garcias",
+                    Email = "hermesg@trimly.com",
+                    PhoneNumber = "3114785896",
+                    Rol = RolUsuario.Cliente
+                },
+                new Usuario
+                {
+                    Name = "Davidson Arias",
+                    Email = "davidsona@trimly.com",
+                    PhoneNumber = "3012569874",
+                    Rol = RolUsuario.Cliente
+                }
             };
             await context.Usuarios.AddRangeAsync(usuarios);
             await context.SaveChangesAsync();
 
-            // 2. Barberos
-            var barberos = new List<Barbero>
+            // 2. Perfiles
+            var perfiles = new List<Perfil>
             {
-                new Barbero { Name = "Harold Bedoya" },
-                new Barbero { Name = "Yuri Vilela"  }
+                new Perfil
+                {
+                    FotoUrl = "https://via.placeholder.com/150",
+                    Bio = "Fundador de Trimly",
+                    UsuarioId = usuarios[0].Id
+                },
+                new Perfil
+                {
+                    FotoUrl = "https://via.placeholder.com/150",
+                    Bio = "Barbero y administrador con 10 años de experiencia",
+                    UsuarioId = usuarios[1].Id
+                },
+                new Perfil
+                {
+                    FotoUrl = "https://via.placeholder.com/150",
+                    Bio = "Especialista en cortes modernos",
+                    UsuarioId = usuarios[2].Id
+                },
+                new Perfil
+                {
+                    FotoUrl = "https://via.placeholder.com/150",
+                    Bio = "",
+                    UsuarioId = usuarios[3].Id
+                },
+                new Perfil
+                {
+                    FotoUrl = "https://via.placeholder.com/150",
+                    Bio = "",
+                    UsuarioId = usuarios[3].Id
+                }
             };
-            await context.Barberos.AddRangeAsync(barberos);
+            await context.Pefiles.AddRangeAsync(perfiles);
             await context.SaveChangesAsync();
 
-            // 3. Servicios
+            //3. Barberías
+            var barberias = new List<Barberia>
+            {
+                new Barberia
+                {
+                    Nombre = "Trimly Laureles",
+                    Direccion = "Calle 35 # 70-50, Laureles",
+                    Telefono = "6044567890",
+                    AdminId = usuarios[1].Id
+                },
+                new Barberia
+                {
+                    Nombre = "Trimly El Poblado",
+                    Direccion = "Calle 10 # 43D-20, El Poblado",
+                    Telefono = "6044987654",
+                    AdminId = usuarios[1].Id
+                }
+            };
+            await context.Barberias.AddRangeAsync(barberias);
+            await context.SaveChangesAsync();
+
+            // 4. Barberos asignados a barberías
+            var barberiasBarberos = new List<BarberiasBarberos>
+            {
+                // Miguel trabaja en ambas barberías
+                new BarberiasBarberos { BarberoId = usuarios[1].Id, BarberiaId = barberias[0].Id },
+                new BarberiasBarberos { BarberoId = usuarios[1].Id, BarberiaId = barberias[1].Id },
+                // Juan trabaja solo en Laureles
+                new BarberiasBarberos { BarberoId = usuarios[2].Id, BarberiaId = barberias[0].Id }
+            };
+            await context.BarberiasBarberos.AddRangeAsync(barberiasBarberos);
+            await context.SaveChangesAsync();
+
+            // 5. Servicios
             var servicios = new List<Servicio>
             {
                 new Servicio { Name = "Corte clásico",       Duration = TimeSpan.FromMinutes(30), Price = 25000m },
@@ -44,41 +137,33 @@ namespace Trimly.Infrastructure.Data
             await context.Servicios.AddRangeAsync(servicios);
             await context.SaveChangesAsync();
 
-            // 4. Citas (referenciando los IDs generados)
+            // 6. Citas
             var citas = new List<Cita>
             {
                 new Cita
                 {
                     FechaHora = DateTime.UtcNow.AddDays(1),
                     Estado    = EstadoCita.Pendiente,
-                    UserId    = usuarios[0].Id,
-                    BarberId  = barberos[0].Id,
+                    ClienteId    = usuarios[3].Id,
+                    BarberoId  = usuarios[1].Id,
                     ServiceId = servicios[0].Id
                 },
                 new Cita
                 {
-                    FechaHora = DateTime.UtcNow.AddDays(2),
+                    FechaHora = DateTime.UtcNow.AddDays(1).AddHours(1),
                     Estado    = EstadoCita.Confirmada,
-                    UserId    = usuarios[1].Id,
-                    BarberId  = barberos[1].Id,
+                    ClienteId    = usuarios[4].Id,
+                    BarberoId  = usuarios[2].Id,
                     ServiceId = servicios[1].Id
                 },
                 new Cita
                 {
-                    FechaHora = DateTime.UtcNow.AddDays(-3),
+                    FechaHora = DateTime.UtcNow.AddDays(3).AddHours(1),
                     Estado    = EstadoCita.Completada,
-                    UserId    = usuarios[2].Id,
-                    BarberId  = barberos[0].Id,
+                    ClienteId    = usuarios[3].Id,
+                    BarberoId  = usuarios[2].Id,
                     ServiceId = servicios[2].Id
                 },
-                new Cita
-                {
-                    FechaHora = DateTime.UtcNow.AddDays(-1),
-                    Estado    = EstadoCita.Cancelada,
-                    UserId    = usuarios[0].Id,
-                    BarberId  = barberos[1].Id,
-                    ServiceId = servicios[1].Id
-                }
             };
             await context.Citas.AddRangeAsync(citas);
             await context.SaveChangesAsync();

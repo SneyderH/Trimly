@@ -18,8 +18,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Trimly.Application\Trimly.Application.csproj" />
-    <ProjectReference Include="..\Trimly.Domain\Trimly.Domain.csproj" />
-    <ProjectReference Include="..\Trimly.Infraestructure\Trimly.Infrastructure.csproj" />
+    <ProjectReference Include="..\Trimly.Domain\Trimly.Domain.csproj" />    
+	<ProjectReference Include="..\Trimly.Infraestructure\Trimly.Infrastructure.csproj" />
+
   </ItemGroup>
 
 </Project>

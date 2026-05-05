@@ -25,7 +25,7 @@ namespace Trimly.Infrastructure.Repositories
 
             return await _context.Citas
                 .Include(c => c.Servicio)
-                .Where(c => c.BarberId == barberId &&
+                .Where(c => c.BarberoId == barberId &&
                             c.Estado != Domain.Enums.EstadoCita.Cancelada &&
                             c.FechaHora > ahora)
                 .ToListAsync();
@@ -40,7 +40,7 @@ namespace Trimly.Infrastructure.Repositories
         public async Task<Cita?> GetByIdWithDetailsAsync(int id)
         {
             return await _context.Citas
-                .Include (c => c.Usuario)
+                .Include (c => c.Cliente)
                 .Include (c => c.Barbero)
                 .Include (c => c.Servicio)
                 .FirstOrDefaultAsync(c => c.Id == id);

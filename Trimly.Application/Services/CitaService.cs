@@ -45,7 +45,7 @@ namespace Trimly.Application.Services
             var hayChoque = citasDelBarbero.Any(c =>
             {
                 var existenteInicio = c.FechaHora;
-                var existenteFin = c.FechaHora + c.Servicio.Duration;
+                var existenteFin = c.FechaHora + c.Servicio!.Duration;
 
                 return nuevaInicio < existenteFin && nuevaFin > existenteInicio;
             });
@@ -60,8 +60,8 @@ namespace Trimly.Application.Services
             {
                 FechaHora = dto.FechaHora,
                 Estado = EstadoCita.Pendiente,
-                UserId = dto.UserId,
-                BarberId = dto.BarberId,
+                ClienteId = dto.UserId,
+                BarberoId = dto.BarberId,
                 ServiceId = dto.ServiceId
             };
 
@@ -77,10 +77,10 @@ namespace Trimly.Application.Services
                 FechaHora = citaCompleta.FechaHora,
                 FechaHoraFin = nuevaFin,
                 Estado = citaCompleta.Estado.ToString(),
-                Usuario = citaCompleta.Usuario.Name,
-                Barbero = citaCompleta.Barbero.Name,
-                Servicio = citaCompleta.Servicio.Name,
-                Precio = citaCompleta.Servicio.Price,
+                Usuario = citaCompleta.Cliente?.Name,
+                Barbero = citaCompleta.Barbero?.Name,
+                Servicio = citaCompleta.Servicio?.Name,
+                Precio = citaCompleta.Servicio!.Price,
                 DuracionMinutos = (int)citaCompleta.Servicio.Duration.TotalMinutes
             };
         }

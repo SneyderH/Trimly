@@ -14,28 +14,57 @@ namespace Trimly.Infrastructure.Data
         {
         }
         public DbSet<Usuario> Usuarios { get; set; }
-        public DbSet<Barbero> Barberos { get; set; }
+        public DbSet<Perfil> Pefiles { get; set; }
+        public DbSet<Barberia> Barberias { get; set; }
+        public DbSet<BarberiasBarberos> BarberiasBarberos { get; set; }
         public DbSet<Servicio> Servicios { get; set; }
         public DbSet<Cita> Citas { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Cita>(entity =>
-            {
-                // Le dices explícitamente a EF cuál es la FK de cada relación
-                entity.HasOne(c => c.Barbero)
-                      .WithMany(b => b.Citas)
-                      .HasForeignKey(c => c.BarberId);
+            modelBuilder.Entity<Perfil>()
+                .HasOne(p => p.Usuario)
+                .WithOne(u => u.Perfil)
+                .HasForeignKey<Perfil>(p => p.UsuarioId);
+            
+            modelBuilder.Entity<Barberia>()
+                .HasOne(b => b.Admin)
+                .WithMany()
+                .HasForeignKey(b => b.AdminId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-                entity.HasOne(c => c.Usuario)
-                      .WithMany(u => u.Citas)
-                      .HasForeignKey(c => c.UserId);
+            modelBuilder.Entity<BarberiasBarberos>()
+                .HasKey(bb => new { bb.BarberoId, bb.BarberiaId });
 
-                entity.HasOne(c => c.Servicio)
-                      .WithMany(s => s.Citas)
-                      .HasForeignKey(c => c.ServiceId);
-            });
+            modelBuilder.Entity<BarberiasBarberos>()
+                .HasOne(bb => bb.Barbero)
+                .WithMany(u => u.BarberiasBarberos)
+                .HasForeignKey(bb => bb.BarberoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<BarberiasBarberos>()
+                .HasOne(bb => bb.Barberia)
+                .WithMany(u => u.BarberiasBarberos)
+                .HasForeignKey(bb => bb.BarberiaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Cita>()
+                .HasOne(c => c.Cliente)
+                .WithMany(u => u.CitasComoCliente)
+                .HasForeignKey(c => c.ClienteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Cita>()
+                .HasOne(c => c.Barbero)
+                .WithMany(u => u.CitasComoBarbero)
+                .HasForeignKey(c => c.BarberoId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Cita>()
+                .HasOne(c => c.Servicio)
+                .WithMany(u => u.Citas)
+                .HasForeignKey(c => c.ServiceId);
         }
     }
 }

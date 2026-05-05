@@ -12,13 +12,12 @@ namespace Trimly.Domain.Entities
         public int Id { get; set; }
         public DateTime FechaHora { get; set; }
         public EstadoCita Estado { get; set; }
-        public int UserId { get; set; }
-        public int BarberId { get; set; }
+        public int ClienteId { get; set; }
+        public int BarberoId { get; set; }
         public int ServiceId { get; set; }
-
-        public Usuario Usuario { get; set; }
-        public Barbero Barbero { get; set; }
-        public Servicio Servicio { get; set; }
+        public Usuario? Cliente { get; set; }
+        public Usuario? Barbero { get; set; }
+        public Servicio? Servicio { get; set; }
 
     }
 }
